@@ -9,7 +9,8 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("Ứng dụng Phân Tích Báo Cáo Tài Chính 📊 & Chat AI")
+# THAY ĐỔI: Tiêu đề chính (Title) thành Màu đỏ và In đậm (H1)
+st.markdown("<h1 style='color: red;'>**Ứng dụng Phân Tích Báo Cáo Tài Chính 📊 & Chat AI**</h1>", unsafe_allow_html=True)
 
 # Khởi tạo Session State cho Lịch sử Chat
 if 'messages' not in st.session_state:
@@ -107,9 +108,10 @@ def get_chat_response(messages, api_key):
         return f"Đã xảy ra lỗi: {e}"
 
 
-# --- Chức năng 1: Tải File ---
+# --- Chức năng 1: Tải File (Sử dụng markdown để style tiêu đề) ---
+st.markdown("### <span style='color: red;'>**1. Tải file Excel Báo cáo Tài chính (Chỉ tiêu | Năm trước | Năm sau)**</span>", unsafe_allow_html=True)
 uploaded_file = st.file_uploader(
-    "1. Tải file Excel Báo cáo Tài chính (Chỉ tiêu | Năm trước | Năm sau)",
+    " ", # Bỏ trống label vì đã dùng markdown ở trên
     type=['xlsx', 'xls']
 )
 
@@ -130,8 +132,8 @@ if uploaded_file is not None:
 
         if df_processed is not None:
             
-            # --- Chức năng 2 & 3: Hiển thị Kết quả ---
-            st.subheader("2. Tốc độ Tăng trưởng & 3. Tỷ trọng Cơ cấu Tài sản")
+            # THAY ĐỔI: Chức năng 2 & 3 (Subheader) thành Màu đỏ và In đậm
+            st.markdown("### <span style='color: red;'>**2. Tốc độ Tăng trưởng & 3. Tỷ trọng Cơ cấu Tài sản**</span>", unsafe_allow_html=True)
             st.dataframe(df_processed.style.format({
                 'Năm trước': '{:,.0f}',
                 'Năm sau': '{:,.0f}',
@@ -140,8 +142,8 @@ if uploaded_file is not None:
                 'Tỷ trọng Năm sau (%)': '{:.2f}%'
             }), use_container_width=True)
             
-            # --- Chức năng 4: Tính Chỉ số Tài chính ---
-            st.subheader("4. Các Chỉ số Tài chính Cơ bản")
+            # THAY ĐỔI: Chức năng 4 (Subheader) thành Màu đỏ và In đậm
+            st.markdown("### <span style='color: red;'>**4. Các Chỉ số Tài chính Cơ bản**</span>", unsafe_allow_html=True)
             
             try:
                 # Lấy Tài sản ngắn hạn và Nợ ngắn hạn
@@ -172,9 +174,9 @@ if uploaded_file is not None:
                 thanh_toan_hien_hanh_N = "N/A"
                 thanh_toan_hien_hanh_N_1 = "N/A"
             except ZeroDivisionError:
-                 st.warning("Lỗi chia cho 0 khi tính Chỉ số Thanh toán Hiện hành (Nợ ngắn hạn bằng 0).")
-                 thanh_toan_hien_hanh_N = "N/A"
-                 thanh_toan_hien_hanh_N_1 = "N/A"
+                st.warning("Lỗi chia cho 0 khi tính Chỉ số Thanh toán Hiện hành (Nợ ngắn hạn bằng 0).")
+                thanh_toan_hien_hanh_N = "N/A"
+                thanh_toan_hien_hanh_N_1 = "N/A"
             
             # Chuẩn bị dữ liệu để gửi cho AI (Dùng cho cả Chức năng 5 và Chat Context)
             data_for_ai = pd.DataFrame({
@@ -187,13 +189,13 @@ if uploaded_file is not None:
                 'Giá trị': [
                     df_processed.to_markdown(index=False),
                     f"{df_processed[df_processed['Chỉ tiêu'].str.contains('TÀI SẢN NGẮN HẠN', case=False, na=False)]['Tốc độ tăng trưởng (%)'].iloc[0]:.2f}%" if any(df_processed['Chỉ tiêu'].str.contains('TÀI SẢN NGẮN HẠN', case=False, na=False)) else "N/A", 
-                    f"{thanh_toan_hien_hanh_N_1:.2f}" if isinstance(thanh_toan_hien_hanh_N_1, float) else "N/A", 
+                    f"{thanh_toan_hien_hanh_N:.2f}" if isinstance(thanh_toan_hien_hanh_N_1, float) else "N/A", 
                     f"{thanh_toan_hien_hanh_N:.2f}" if isinstance(thanh_toan_hien_hanh_N, float) else "N/A"
                 ]
             }).to_markdown(index=False)
 
-            # --- Chức năng 5: Nhận xét AI Sơ bộ ---
-            st.subheader("5. Nhận xét Tình hình Tài chính Sơ bộ (AI)")
+            # THAY ĐỔI: Chức năng 5 (Subheader) thành Màu đỏ và In đậm
+            st.markdown("### <span style='color: red;'>**5. Nhận xét Tình hình Tài chính Sơ bộ (AI)**</span>", unsafe_allow_html=True)
             
             if st.button("Yêu cầu AI Phân tích Sơ bộ"):
                 api_key = st.secrets.get("GEMINI_API_KEY") 
@@ -214,9 +216,10 @@ if uploaded_file is not None:
 else:
     st.info("Vui lòng tải lên file Excel để bắt đầu phân tích.")
 
-# --- Chức năng 6: Khung Chat Tương tác ---
+# --- Chức năng 6: Khung Chat Tương tác (Subheader) ---
 st.markdown("---")
-st.subheader("6. Chat Tương tác với AI 💬")
+# THAY ĐỔI: Chức năng 6 (Subheader) thành Màu đỏ và In đậm
+st.markdown("### <span style='color: red;'>**6. Chat Tương tác với AI 💬**</span>", unsafe_allow_html=True)
 
 if df_processed is not None and st.secrets.get("GEMINI_API_KEY"):
     
@@ -263,4 +266,4 @@ if df_processed is not None and st.secrets.get("GEMINI_API_KEY"):
 elif df_processed is None:
     st.info("Vui lòng tải lên file và phân tích để bắt đầu trò chuyện.")
 elif not st.secrets.get("GEMINI_API_KEY"):
-     st.error("Không thể sử dụng Chat AI vì Khóa API (GEMINI_API_KEY) chưa được cấu hình trong Streamlit Secrets.")
+    st.error("Không thể sử dụng Chat AI vì Khóa API (GEMINI_API_KEY) chưa được cấu hình trong Streamlit Secrets.")
